@@ -3,9 +3,6 @@
 ```bash
 $ git init
 
-# Set branch to main
-$ git branch -M 'main'
-
 # Add all
 $ git add .
 
@@ -13,7 +10,7 @@ $ git add .
 $ git commit -m 'Custom'
 
 # Add remote
-$ git remote add origin #remote-url
+$ git remote add origin remote_url
 
 # Check remote
 $ git remote -v
@@ -46,3 +43,30 @@ $ git remote -v
 # Push to Heroku
 $ git push heroku master
 ```
+
+**Dealing with branches**
+
+```bash
+# Get branch status
+$ git status
+
+# Check all branchs
+$ git branch -a -v
+
+# Rename branch
+$ git branch -M new_name
+
+# Create new branch
+$ git checkout -b branch_name
+
+# Go to branch
+$ git checkout branch_name
+
+# Merge branch (in receiving branch)
+$ git merge branch_name
+```
+
+**FAQ**
+- What is '-u' flag? A: https://git-scm.com/docs/git-push
+- What is '-M' flag? A: https://git-scm.com/docs/git-branch
+- Waht is '-b' flag? A: https://git-scm.com/docs/git-checkout
