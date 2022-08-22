@@ -64,6 +64,10 @@ $ git checkout branch_name
 
 # Merge branch (in receiving branch)
 $ git merge branch_name
+
+# Delete branch
+$ git branch --delete BRANCH_NAME #locally
+$ git push origin --delete BRANCH_NAME #remotely
 ```
 
 **FAQ**
