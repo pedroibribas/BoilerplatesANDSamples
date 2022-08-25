@@ -9,6 +9,9 @@ $ git add .
 # Commit
 $ git commit -m 'Custom'
 
+# Modify last commit
+$ git commit --amend -m "an updated commit message"
+
 # Add remote
 $ git remote add origin remote_url
 
