@@ -20,9 +20,6 @@ $ git remote -v
 
 # Push to remote
 $ git push -u origin 'main'
-
-# Merge with remote
-$ git pull origin
 ```
 
 **Deploy to Heroku with Git**:
@@ -71,6 +68,15 @@ $ git merge branch_name
 # Delete branch
 $ git branch --delete BRANCH_NAME #locally
 $ git push origin --delete BRANCH_NAME #remotely
+```
+
+**Métodos de mesclagem**
+
+- Mesclar na ramificação atual o ramo remoto `develop`:
+```bash
+$ git pull origin develop #--verbose
+# $ git fetch origin
+# $ git merge origin/develop
 ```
 
 **FAQ**
