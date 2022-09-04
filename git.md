@@ -1,3 +1,17 @@
+**Métodos de mesclagem**
+
+- Mesclar na ramificação atual o ramo remoto `develop`:
+```bash
+$ git pull origin develop #--verbose
+# $ git fetch origin
+# $ git merge origin/develop
+```
+- Mesclar na ramificação atual o ramo `feature`:
+```bash
+$ git merge feature
+```
+<br>
+
 **Git Basics**
 
 ```bash
@@ -70,14 +84,7 @@ $ git branch --delete BRANCH_NAME #locally
 $ git push origin --delete BRANCH_NAME #remotely
 ```
 
-**Métodos de mesclagem**
 
-- Mesclar na ramificação atual o ramo remoto `develop`:
-```bash
-$ git pull origin develop #--verbose
-# $ git fetch origin
-# $ git merge origin/develop
-```
 
 **FAQ**
 - What is '-u' flag? A: https://git-scm.com/docs/git-push
