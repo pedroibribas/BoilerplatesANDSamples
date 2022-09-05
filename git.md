@@ -26,11 +26,10 @@ $ git commit -m 'Custom'
 # Modify last commit
 $ git commit --amend -m "an updated commit message"
 
-# Add remote
-$ git remote add origin remote_url
-
-# Check remote
-$ git remote -v
+# REMOTO ORIGIN
+$ git remote add origin <remote_url> #adiciona
+$ git remote -v #verifica remotos
+$ git remote rm origin #remove remotos
 
 # Push to remote
 $ git push -u origin 'main'
