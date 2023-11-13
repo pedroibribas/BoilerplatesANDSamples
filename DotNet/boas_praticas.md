@@ -1,3 +1,7 @@
+# Refatoração
+- **Conceito:** O processo de aplicar mudanças para melhorar código já escrito anteriormente sem alterar o comportamento externo da aplicação é chamado de Refatoração, e possui inúmeras referências na literatura de programação de software, sendo a mais famosa o livro Refactoring: Improving the Design of Existing Code do autor Martin Fowler. Outro livro importante é The Pragmatic Programmer.
+- A cada mudança que aplicamos em nosso projeto para alcançar maior legibilidade precisamos testar se tudo continua funcionando como estava.
+
 # Legibilidade
 ## Usar código para explicar o código
 - **Comentários:** Depender de comentários para explicar um código é ruim, porque o comentário dificilmente será atualizado quando o código for alterado. Nesse caso, convém limpar os comentários substituindo-os por variáveis com nomes signifiativos.
@@ -11,6 +15,39 @@
 - **Exração de classes:** Na POO, o ideal é isolar instruções em classes específicas.
 - **Parâmetro nomeado:** Nomear o parâmetro ao chamar um método melhora a legibilidade do código.
 
-# Refatoração
-- **Conceito:** O processo de aplicar mudanças para melhorar código já escrito anteriormente sem alterar o comportamento externo da aplicação é chamado de Refatoração, e possui inúmeras referências na literatura de programação de software, sendo a mais famosa o livro Refactoring: Improving the Design of Existing Code do autor Martin Fowler.
-- A cada mudança que aplicamos em nosso projeto para alcançar maior legibilidade precisamos testar se tudo continua funcionando como estava.
+# Duplicidade e Reutilização de Código
+- **Problemas do código duplicado:** O código duplicado pode tornar o código mais difícil de entender e de manter, tornando o programa mais complexo e suscetível a erros.
+- **Ambiguidade:** Uma informação repetida gera ambiguidade; e caso a informação precise ser alterada, alterar em cada ponto gera problemas. O ideal é criar uma única fonte para a informação, para que a manutenção seja feita em um único lugar.
+- **DRY:** 
+- **Coleções .NET**
+- **Atributos .NET**
+- **Visibilidade, encapsulamento**
+
+```csharp
+[AttributeUsage(AttributeTargets.Class)]
+public class CommandDocumentationAttribute : Attribute
+{
+    public CommandDocumentationAttribute(string instruction, string documentation)
+    {
+        Instruction = instruction;
+        Documentation = documentation;
+    }
+
+    public string Instruction { get; }
+    public string Documentation { get; }
+}
+
+[CommandDocumentation("", "")]
+public class Help
+{
+    private readonly Dictionary<string, CommandDocumentationAttribute> Docs;
+    public Help()
+    {
+        Docs = Assembly.GetExecutingAssembly()
+                       .GetTypes()
+                       .Where(x => x.GetCustomAttributes<CommandDocumentationAttribute>().Any())
+                       .Select(x => x.GetCustomAttribute<CommandDocumentationAttribute>()!)
+                       .ToDictionary(x => x.Instruction);
+    }
+}
+```
