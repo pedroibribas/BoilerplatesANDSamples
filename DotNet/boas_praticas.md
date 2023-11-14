@@ -1,6 +1,23 @@
 # Refatoração
-- **Conceito:** O processo de aplicar mudanças para melhorar código já escrito anteriormente sem alterar o comportamento externo da aplicação é chamado de Refatoração, e possui inúmeras referências na literatura de programação de software, sendo a mais famosa o livro Refactoring: Improving the Design of Existing Code do autor Martin Fowler. Outro livro importante é The Pragmatic Programmer.
-- A cada mudança que aplicamos em nosso projeto para alcançar maior legibilidade precisamos testar se tudo continua funcionando como estava.
+- Refatoração
+    - Conceito
+    - Teste
+    - Referências
+- **Conceito:** O processo de aplicar mudanças para melhorar código já escrito anteriormente sem alterar o comportamento externo da aplicação é chamado de Refatoração.
+- **Teste:** A cada mudança que aplicamos em nosso projeto para alcançar maior legibilidade precisamos testar se tudo continua funcionando como estava.
+- **Referência bibliográfica:** _Refactoring: Improving the Design of Existing Code_; _The Pragmatic Programmer_.
+- [Architect Modern Web Applications with ASP.NET Core and Azure](https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/)
+
+# Pilares da Programação Orientada a Objeto
+- Encapsulamento
+## Encapsulamento
+O pilar do encapsulamento (_encapsulation_) lida com a segregação da informação e sua manipulação dentro de uma única classe. Sua finalidade é criar códigos mais fáceis de entender, concentrar a manutenção de uma informação, e manter a integridade da informação. O encapsulamento é feito através da limitação do acesso a propriedades e métodos, bem como na limitação do retorno dos métodos.
+### Coleções .NET
+O (_Diretrizes para Coleções_)[https://learn.microsoft.com/pt-br/dotnet/standard/design-guidelines/guidelines-for-collections] trata de boas práticas no uso de coleções de objetos que tornam o código mais seguro, especialmente coleções que implementam o tipo `IEnumerable<T>`, sendo algumas as seguintes:
+- Não usar o tipo `List<T>` em APIs públicas, pois o seu retorno é alterável pelo cliente da solicitação. Optar por seu uso em implementações internas.
+- Para coleções somente leitura, usar o tipo `ReadOnlyColletion<T>`.
+- Para acessar propriedades de coleções de leitura/gravação, optar pelo tipo `Collection<T>` ou classes da sua hierarquia.
+- Preferir `IEnumerable<T>` a `ICollection<T>` para acessar propriedades como `Count`.
 
 # Legibilidade
 ## Usar código para explicar o código
@@ -15,39 +32,36 @@
 - **Exração de classes:** Na POO, o ideal é isolar instruções em classes específicas.
 - **Parâmetro nomeado:** Nomear o parâmetro ao chamar um método melhora a legibilidade do código.
 
-# Duplicidade e Reutilização de Código
-- **Problemas do código duplicado:** O código duplicado pode tornar o código mais difícil de entender e de manter, tornando o programa mais complexo e suscetível a erros.
-- **Ambiguidade:** Uma informação repetida gera ambiguidade; e caso a informação precise ser alterada, alterar em cada ponto gera problemas. O ideal é criar uma única fonte para a informação, para que a manutenção seja feita em um único lugar.
-- **DRY:** 
-- **Coleções .NET**
-- **Atributos .NET**
-- **Visibilidade, encapsulamento**
-
+# Código Ambíguo
+- Problemas do código repetido
+- DRY
+- Attribute .NET
+## DRY
+O código repetido - ou duplicado, ou ambíguo - pode complicar a manutenção, porque uma informação repetida cria diferentes pontos de manutenção iguais, já que a atualização da informação exige a atualização de cada ponto diferente. O ideal é ter uma única fonte para a informação, reutilizável, para concentrar a manutenção em um único lugar. Isso significa aplicar o _Don't Repeate Yourself_. Disse Alexandre Aquiles (_Desbravando o Solid_, 2022, p. 38 ): “Todo bloco de conhecimento deve ter uma representação única, sem ambiguidades e dominante num sistema”.
+## Extração de classe
+A instrução repetida pode ser centralizada em um único arquivo em uma classe própria. Por exemplo, a lógica responsável pela leitura de arquivos pode estar em uma classe apropriada para essa finalidade, sendo invocada pelas classes que precisarem dela.
+## Extração de função
+A instrução repetida pode estar em um método próprio dentro de uma mesma classe.
+## Atributos .NET
+Usar uma classe atributo é uma forma de evitar a repetição de código.
+Trata-se de uma classe cujos dados são armazenados na definição de metadados do assembly, e acessados em tempo de execução via as APIs de Reflexão (_reflection_).
+A classe atributo herda de `System.Attribute`, e recebe um atributo para atributos personalizados - no caso, `AttributeTargets.Class`. Veja-se o código abaixo:
 ```csharp
-[AttributeUsage(AttributeTargets.Class)]
-public class CommandDocumentationAttribute : Attribute
-{
-    public CommandDocumentationAttribute(string instruction, string documentation)
+[AttributeUsage(AttributeTargets.Class)] public class AmostraAttribute : Attribute { public string Texto { get; } }
+```
+Esse atributo fica disponível para ser usados por outras classes.
+```csharp
+[MinhaClasse("Hello, World.")] // Uso do atributo.
+public class MinhaClasse {
+    private readonly Dictionary<string, AmostraAttribute> Atributos;
+    public MinhaClasse()
     {
-        Instruction = instruction;
-        Documentation = documentation;
-    }
-
-    public string Instruction { get; }
-    public string Documentation { get; }
-}
-
-[CommandDocumentation("", "")]
-public class Help
-{
-    private readonly Dictionary<string, CommandDocumentationAttribute> Docs;
-    public Help()
-    {
-        Docs = Assembly.GetExecutingAssembly()
-                       .GetTypes()
-                       .Where(x => x.GetCustomAttributes<CommandDocumentationAttribute>().Any())
-                       .Select(x => x.GetCustomAttribute<CommandDocumentationAttribute>()!)
-                       .ToDictionary(x => x.Instruction);
+        Docs = Assembly.GetExecutingAssembly() // Acesso em tempo de execução no assembly com Reflexão.
+                       .GetTypes() // Acesso aos tipos de metadados do assembly.
+                       .Where(t => t.GetCustomAttributes<AmostraAttribute>().Any()) // Obtém apenas atributos do tipo AmostraAttribute
+                       .Select(t => t.GetCustomAttribute<AmostraAttribute>()!) // Obtém lista dos atributos
+                       .ToDictionary(d => d.Texto); // Transforma lista em dicionário
     }
 }
 ```
+Veja-se o artigo [Attributes](https://learn.microsoft.com/en-us/dotnet/standard/design-guidelines/attributes) para ver boas práticas no uso de atributos.
