@@ -6,6 +6,14 @@ Organizar o projeto em pastas pode melhorar a **manutenção** do código. Isso 
 
 Como, por exemplo, separar em uma pasta específica classes com a lógica de negócios -- **Models**; com interface do usuário -- **Commands**; classes utilitárias -- **Utils**; classes de teste -- **Tests**; classes que se comunicam com a API -- **Services**; etc.
 
+```
+|-- Commands
+|-- Models
+|-- Services
+|-- Tests
+|-- Utils
+```
+
 Contudo, é importante evitar criar uma hierarquia de pastas muito complexa, senão o projeto acaba ficando difícil de entender e manter. É necessário um equilíbrio entre a organização do projeto e a simplicidade para manter a eficiência e a qualidade do código. A hierarquia muito complexa pode ser confusa para novos membros da equipe, levar a erros e dificultar a colaboração.
 
 ## Diretrizes
