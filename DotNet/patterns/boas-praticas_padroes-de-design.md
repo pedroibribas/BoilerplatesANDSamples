@@ -28,6 +28,92 @@ As classes/objetos participantes do padrão são:
 - **Receptor(Receiver):** Objeto que conhece como executar as operações associadas com a execução do comando, isto é, ele contém os métodos que são executados quando um ou mais comandos são invocados. Isso permite que a funcionalidade real seja realizada separadamente para as definições de comando.
 - **Chamador (Invoker):** É o inicializador das ações de comando, e solicita ao comando para executar a requisição.
 
+#### Conceito
+```csharp
+// Receptor
+class Dog
+{
+  public Run(int Distance)
+  {
+    if (Distance > 0)
+      Console.WriteLine("O cão correu {0} metros para frente.", Distance);
+    else
+      Console.WriteLine("O cão correu {0} metros para trás.", Distance);
+  }
 
+  public Bark(bool IsBarking)
+  {
+    if (IsBarking)
+      Console.WriteLine("O cão está latindo.");
+    else
+      Console.WriteLine("O cão parou de latir.");
+  }
+}
 
-  
+// Comando
+class abstract DogCommand {
+  protected Dog _dog;
+  public DogCommand(Dog dog) { _dog = dog };
+  public abstract void Execute();
+  public abstract void Undo();
+}
+
+// ComandoConcreto
+class RunCommand : DogCommand
+{
+  public int Distance { get; set; }
+  public RunCommand(Dog dog) : base(dog) {};
+  public override void Execute() { _dog.Run(Distance); }
+  public override void Undo() { _dog.Run(-Distance); }
+}
+
+class BarkCommand : DogCommand
+{
+  public bool Start { get; set; }
+  public BarkCommand(Dog dog) : base(dog) {};
+  public override void Execute() { _dog.Bark(Start); }
+  public override void Undo() { _dog.Bark(!Start); }
+}
+
+// Chamador
+class DogControl
+{
+  public Queue<DogCommand> Commands;
+  private Stack<DogCommand> _undoStack;
+  public DogControl()
+  {
+    Commands = new Queue<DogCommand>();
+    _undoStack = new Stack<DogCommand>();
+  }
+  public void ExecuteCommands()
+  {
+    while (Commands.Count > 0)
+    {
+      DogCommand command = Commands.Dequeue();
+      command.Execute();
+      _undoStack.Push(command);
+    }
+  }
+  public void UndoCommands(int commandsAmount)
+  {
+    while (commandsAmount > 0 && _undoStack.Count > 0)
+    {
+      DogCommand command = _undoStack.Pop();
+      command.Undo();
+      commandsAmount--;
+    }
+  }
+
+class Program
+{
+  Dog dog = new();
+  DogControl control = new();
+
+  RunCommand run = new(dog);
+  run.Distance = 10;
+  control.Commands.Enqueue(run);
+
+  control.ExecuteCommands();
+  control.UndoCommands(1);
+}
+```
