@@ -1,3 +1,11 @@
+# .NET Core e MongoDB Driver (Padrão Repository)
+
+## Referências
+- [Create a web API with ASP.NET Core and MongoDB; Microsoft](https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mongo-app?view=aspnetcore-8.0&tabs=visual-studio)
+- [Build Your First .NET Core Application with MongoDB Atlas; MongoDB.com](https://www.mongodb.com/developer/languages/csharp/build-first-dotnet-core-application-mongodb-atlas/#building-a-poco-class-for-the-mongodb-document-model)
+- [Create a RESTful API with .NET Core and MongoDB; MongoDB.com.](https://www.mongodb.com/developer/languages/csharp/create-restful-api-dotnet-core-mongodb/)
+
+```csharp
 // API
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,35 +29,37 @@ namespace Domain.Interfaces.Repositories
   }
 }
 
-// Objeto para dados de configuração
+// Settings
 
 namespace Infrastructure.Configuration
 {
   public class MongoDbSettings
   {
     public string? ConnectionString { get; set; }
-    public string? DatabaseName { get; set; }
+    public string? Database { get; set; }
     public string? CollectionName { get; set; }
   }
 }
 
-// Objeto de contexto
-// Responsável por recuperar os dados da base.
-namespace Infrastructure.Context.Mongo
+// Unit of Work para acesso à data source
+
+namespace Infrastructure.Context
 {
-  public class MongoDbContext : IMongoDbContext
+  public class PersonContext
   {
     private readonly IMongoDatabase _database = null;
-    
-    public MongoDbContext(IOptions<MongoDbSettings> settings)
+
+    public PersonContext(IOptions<MongoDbSettings> settings)
     {
       var client = new MongoClient(settings.Value.ConnectionString);
       if (client != null)
-        _database = client.GetDatabase(settings.Value.DatabaseName);
+        _database = client.GetDatabase(settings.Value.Database);
     }
 
-    public IMongoCollection<T> GetCollection<T>(string name) =>
-      _database.GetCollection<T>(name);
+    public IMongoCollection<Person> People(string name)
+    {
+      get { return _database.GetCollection<Person>("Person"); }
+    }
   }
 }
 
@@ -59,11 +69,15 @@ namespace Infrastructure.Repositories.Base
 {
   public class BaseRepository<T> : IBaseRepository<T> where T : class
   {
-    protected readonly _db;
+    private readonly MongoDbContext _context = null;
+
     protected readonly FilterDefinition<T> FilterBuilder;
     protected readonly UpdateOptions UpdateOptions;
+
     public BaseRepository()
     {
+      _context = new MongoDbContext(MongoDbSettings);
+
       FilterBuilder = Builders<T>.Filter;
       UpdateOptions = new UpdateOptions { isUpsert = true; };
     }
@@ -82,3 +96,5 @@ namespace Infrastructure.Repositories.Person
     }
   }
 }
+
+```
