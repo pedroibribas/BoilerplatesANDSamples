@@ -1,10 +1,14 @@
 # CreateDotnetSln
 
+<br>
+
 ## Especificações
 |                                              |                                              |
 | -------------------------------------------- | -------------------------------------------- |
 | Versão                                       | 1.0.0 |
 | Plataforma                                   | PowerShell 7.4.2 |
+
+<br>
 
 ## Modo de uso
 - Abra o PowerShell e navegue para a pasta onde o projeto será inicializado:
